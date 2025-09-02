@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hyderabad Stays - Find Your Ideal Rental</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+  <script defer src="home.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Hyderabad Stays</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="#search">Book</a>
+      <a href="#about">About</a>
+      <a href="index.html">Logout</a>
+    </nav>
+  </header>
+  <section id="search" class="search-section">
+    <h2>Search for Rentals in Hyderabad</h2>
+    <form id="searchForm">
+      <input type="text" id="searchPlace" placeholder="Enter area/locality (e.g. Banjara Hills)">
+      <input type="number" id="minPrice" placeholder="Min Price">
+      <input type="number" id="maxPrice" placeholder="Max Price">
+      <button type="submit">Find Stays</button>
+
+      
+    </form>
+  </section>
+  <section id="results" class="results-section"></section>
+  <section id="stays" class="stays-section">
+    <h2>Available Stays</h2>
+    <div id="staysContainer"></div>
+  </section>
+  <section id="about" class="about-section">
+    <h2>About Hyderabad Stays</h2>
+    <p>Discover the best short-term rentals in Hyderabad. From luxury high-rises in Gachibowli to cozy budget-friendly rooms in Uppal, we connect you with comfort, convenience, and all the information you need for an inspiring stay, complete with suggestions on what to explore around your rental!</p>
+  </section>
+  <footer>
+    <p>&copy; 2025 Hyderabad Stays. Designed with ❤️ for Hyderabad.</p>
+  </footer>
+</body>
+</html>
