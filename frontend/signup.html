@@ -30,20 +30,39 @@
     </div>
   </div>
 
-  <script>
-    function signupUser(e) {
-      e.preventDefault();
-      let name = document.getElementById("signupName").value;
-      let email = document.getElementById("signupEmail").value;
-      let password = document.getElementById("signupPassword").value;
+<script>
+async function signupUser(e) {
+  e.preventDefault();
+  const name = document.getElementById("signupName").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
 
-      if (name && email && password) {
-        alert("Signup successful! Redirecting to homepage...");
-        window.location.href = "index.html";
-      } else {
-        alert("Please fill all fields!");
-      }
+  if (!name || !email || !password) {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:5000/api/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    const data = await res.json();
+    if (res.status === 201) {
+      alert("Signup successful! Redirecting to login...");
+      window.location.href = "login.html";
+    } else {
+      alert(data.message || "Signup failed!");
     }
-  </script>
+  } catch (err) {
+    alert("Error connecting to server");
+    console.error(err);
+  }
+}
+</script>
+
+
 </body>
 </html>
