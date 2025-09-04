@@ -1,0 +1,15 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+.btn {
+  border-radius: 25px;
+}
+
+textarea {
+  resize: none;
+}
