@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000"; // change this to your deployed backend URL later
+const API_URL = "http://localhost:3000/api"; // correct base URL
 
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
@@ -10,7 +10,7 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   const password = document.getElementById("signupPassword").value;
 
   try {
-    const res = await fetch(${API_URL}/users/signup, {
+    const res = await fetch(`${API_URL}/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
@@ -31,7 +31,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   const password = document.getElementById("loginPassword").value;
 
   try {
-    const res = await fetch(${API_URL}/users/login, {
+    const res = await fetch(`${API_URL}/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -63,7 +63,7 @@ document.getElementById("listingForm")?.addEventListener("submit", async (e) => 
   const location = document.getElementById("listingLocation").value;
 
   try {
-    const res = await fetch(${API_URL}/listings, {
+    const res = await fetch(`${API_URL}/listings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -89,7 +89,7 @@ const listingsContainer = document.getElementById("listingsContainer");
 if (listingsContainer) {
   (async () => {
     try {
-      const res = await fetch(${API_URL}/listings);
+      const res = await fetch(`${API_URL}/listings`);
       const listings = await res.json();
 
       listingsContainer.innerHTML = listings.map(l => `
@@ -117,7 +117,7 @@ const listingId = params.get("id");
 if (listingId) {
   (async () => {
     try {
-      const res = await fetch(${API_URL}/listings/${listingId});
+      const res = await fetch(`${API_URL}/listings/${listingId}`);
       const listing = await res.json();
 
       document.getElementById("listingDetails").innerHTML = `
@@ -128,8 +128,9 @@ if (listingId) {
             <p>${listing.description}</p>
             <p><strong>₹${listing.price} / night</strong></p>
             <p><i>${listing.location}</i></p>
-            ${currentUser && currentUser._id === listing.userId ? 
-              <button onclick="deleteListing('${listing._id}')" class="btn btn-danger">Delete</button> : ""}
+            ${currentUser && currentUser._id === listing.userId 
+              ? `<button onclick="deleteListing('${listing._id}')" class="btn btn-danger">Delete</button>` 
+              : ""}
           </div>
         </div>
       `;
@@ -144,7 +145,7 @@ if (listingId) {
 // ================== DELETE LISTING ==================
 async function deleteListing(id) {
   try {
-    const res = await fetch(${API_URL}/listings/${id}, { method: "DELETE" });
+    const res = await fetch(`${API_URL}/listings/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Delete failed");
     alert("Listing deleted!");
     window.location.href = "index.html";
@@ -156,14 +157,14 @@ async function deleteListing(id) {
 // ================== REVIEWS ==================
 async function loadReviews(listing) {
   const reviewsList = document.getElementById("reviewsList");
-  reviewsList.innerHTML = listing.reviews.map(r => <li class="list-group-item">${r}</li>).join("");
+  reviewsList.innerHTML = listing.reviews.map(r => `<li class="list-group-item">${r}</li>`).join("");
 
   document.getElementById("reviewForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const review = document.getElementById("reviewText").value;
 
     try {
-      const res = await fetch(${API_URL}/listings/${listing._id}/reviews, {
+      const res = await fetch(`${API_URL}/listings/${listing._id}/reviews`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ review })
