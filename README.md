@@ -97,6 +97,72 @@ POST	/api/users/login	Login a user
 🔹 Listings
 Method	Endpoint	Description
 GET	/api/listings/	Get all listings
+
+Docker
+
+🌐 Frontend Docker Setup
+
+This project uses Docker and Nginx to serve a static frontend application.
+The provided Dockerfile builds a lightweight container that serves files from /usr/share/nginx/html using Nginx.
+
+📦 Prerequisites
+
+Docker
+ installed on your system
+
+⚙️ Build & Run
+1. Build Docker image
+docker build -t my-frontend .
+
+2. Run container
+docker run -d -p 8080:80 my-frontend
+
+
+Now your frontend will be available at 👉 http://localhost:8080
+
+📂 Dockerfile Explained
+# Use Nginx to serve static frontend
+FROM nginx:alpine
+
+# Copy all frontend files into nginx public folder
+COPY . /usr/share/nginx/html
+
+# Expose nginx default port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+
+nginx:alpine → lightweight Nginx base image
+
+COPY . /usr/share/nginx/html → copies frontend build files into Nginx’s default web directory
+
+EXPOSE 80 → exposes port 80 inside the container
+
+CMD ["nginx", "-g", "daemon off;"] → runs Nginx in the foreground
+
+🔧 Useful Commands
+Stop container
+docker stop <container_id>
+
+Remove container
+docker rm <container_id>
+
+Remove image
+docker rmi my-frontend
+
+🚀 Deployment Notes
+
+Make sure your frontend build (e.g., React, Vue, Angular) is compiled before building the Docker image.
+Example (React):
+
+npm run build
+
+
+Then copy the build/ folder contents into the Docker context (same directory as the Dockerfile).
+
+You can also customize Nginx config by mounting or replacing /etc/nginx/conf.d/default.conf.
 GET	/api/listings/:id	Get a single listing
 POST	/api/listings/	Create new listing
 DELETE	/api/listings/:id	Delete listing
