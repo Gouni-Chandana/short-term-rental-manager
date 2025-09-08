@@ -121,16 +121,16 @@ docker run -d -p 8080:80 my-frontend
 Now your frontend will be available at 👉 http://localhost:8080
 
 📂 Dockerfile Explained
-# Use Nginx to serve static frontend
+ Use Nginx to serve static frontend
 FROM nginx:alpine
 
-# Copy all frontend files into nginx public folder
+Copy all frontend files into nginx public folder
 COPY . /usr/share/nginx/html
 
-# Expose nginx default port
+Expose nginx default port
 EXPOSE 80
 
-# Start nginx
+Start nginx
 CMD ["nginx", "-g", "daemon off;"]
 
 
