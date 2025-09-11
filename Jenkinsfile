@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Test Echo') {
             steps {
-                git branch: 'main', url: 'https://github.com/Chinmayee29/short-term-rental-manager.git'
+                echo "✅ Jenkinsfile is running!"
             }
         }
 
