@@ -1,4 +1,8 @@
+
+const API_URL = "http://localhost:3000"; // This URL is correct for Docker setup
+=======
 const API_URL = "http://localhost:3000/api"; // correct base URL
+
 
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
@@ -10,14 +14,18 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   const password = document.getElementById("signupPassword").value;
 
   try {
+
+    const res = await fetch(${API_URL}/api/users/signup, { // MODIFIED
+=======
     const res = await fetch(`${API_URL}/users/signup`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
     });
 
     if (!res.ok) throw new Error("Signup failed");
-    alert("Signup successful!");
+    alert("Signup successful! Please login.");
     window.location.href = "login.html";
   } catch (err) {
     alert("Error: " + err.message);
@@ -31,7 +39,12 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   const password = document.getElementById("loginPassword").value;
 
   try {
+
+
+    const res = await fetch(${API_URL}/api/users/login, { // MODIFIED
+=======
     const res = await fetch(`${API_URL}/users/login`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -40,7 +53,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Invalid credentials");
 
-    currentUser = data; // store logged in user
+    currentUser = data;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
     window.location.href = "index.html";
   } catch (err) {
@@ -52,7 +65,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
 document.getElementById("listingForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser) {
-    alert("Login first!");
+    alert("Please login first to add a listing!");
     return;
   }
 
@@ -63,7 +76,11 @@ document.getElementById("listingForm")?.addEventListener("submit", async (e) => 
   const location = document.getElementById("listingLocation").value;
 
   try {
+
+    const res = await fetch(${API_URL}/api/listings, { // MODIFIED
+=======
     const res = await fetch(`${API_URL}/listings`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -77,7 +94,7 @@ document.getElementById("listingForm")?.addEventListener("submit", async (e) => 
     });
 
     if (!res.ok) throw new Error("Failed to add listing");
-    alert("Listing added!");
+    alert("Listing added successfully!");
     window.location.href = "index.html";
   } catch (err) {
     alert("Error: " + err.message);
@@ -89,7 +106,11 @@ const listingsContainer = document.getElementById("listingsContainer");
 if (listingsContainer) {
   (async () => {
     try {
+
+      const res = await fetch(${API_URL}/api/listings); // MODIFIED
+=======
       const res = await fetch(`${API_URL}/listings`);
+
       const listings = await res.json();
 
       listingsContainer.innerHTML = listings.map(l => `
@@ -106,7 +127,7 @@ if (listingsContainer) {
         </div>
       `).join("");
     } catch (err) {
-      listingsContainer.innerHTML = "Failed to load listings.";
+      listingsContainer.innerHTML = "<p>Failed to load listings. Is the backend running?</p>";
     }
   })();
 }
@@ -117,7 +138,11 @@ const listingId = params.get("id");
 if (listingId) {
   (async () => {
     try {
+
+      const res = await fetch(${API_URL}/api/listings/${listingId}); // MODIFIED
+=======
       const res = await fetch(`${API_URL}/listings/${listingId}`);
+
       const listing = await res.json();
 
       document.getElementById("listingDetails").innerHTML = `
@@ -128,24 +153,34 @@ if (listingId) {
             <p>${listing.description}</p>
             <p><strong>₹${listing.price} / night</strong></p>
             <p><i>${listing.location}</i></p>
+
+            ${currentUser && currentUser._id === listing.userId ?
+              <button onclick="deleteListing('${listing._id}')" class="btn btn-danger">Delete</button> : ""}
+=======
             ${currentUser && currentUser._id === listing.userId 
               ? `<button onclick="deleteListing('${listing._id}')" class="btn btn-danger">Delete</button>` 
               : ""}
+
           </div>
         </div>
       `;
 
       loadReviews(listing);
     } catch (err) {
-      alert("Failed to load listing.");
+      alert("Failed to load listing details.");
     }
   })();
 }
 
 // ================== DELETE LISTING ==================
 async function deleteListing(id) {
+  if (!confirm("Are you sure you want to delete this listing?")) return;
   try {
+
+    const res = await fetch(${API_URL}/api/listings/${id}, { method: "DELETE" }); // MODIFIED
+=======
     const res = await fetch(`${API_URL}/listings/${id}`, { method: "DELETE" });
+
     if (!res.ok) throw new Error("Delete failed");
     alert("Listing deleted!");
     window.location.href = "index.html";
@@ -161,10 +196,18 @@ async function loadReviews(listing) {
 
   document.getElementById("reviewForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!currentUser) {
+        alert("Please login to post a review.");
+        return;
+    }
     const review = document.getElementById("reviewText").value;
 
     try {
+
+      const res = await fetch(${API_URL}/api/listings/${listing._id}/reviews, { // MODIFIED
+=======
       const res = await fetch(`${API_URL}/listings/${listing._id}/reviews`, {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ review })
