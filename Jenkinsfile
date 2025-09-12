@@ -1,69 +1,51 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'Node18'  
+    }
+
     environment {
-        // Path to your .env file
-        ENV_FILE = '.env'
-        BACKEND_IMAGE = 'rental-backend'
-        FRONTEND_IMAGE = 'rental-frontend'
+        MONGO_URI = credentials('MONGO_URI')
+        JWT_SECRET = credentials('JWT_SECRET')
+        BITLY_ACCESS_TOKEN = credentials('BITLY_ACCESS_TOKEN')
+        PORT = "5000"
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                echo 'Checking out code...'
-                checkout scm
+                git branch: 'main',
+                    url: 'https://github.com/Chinmayee29/short-term-rental-manager'
             }
         }
 
-        stage('Build Backend Docker Image') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Building backend Docker image...'
-                sh 'docker build -t $BACKEND_IMAGE ./backend'
+                dir('backend') {
+                    bat 'npm install'
+                }
             }
         }
 
-        stage('Build Frontend Docker Image') {
+        stage('Run Tests') {
             steps {
-                echo 'Building frontend Docker image...'
-                sh 'docker build -t $FRONTEND_IMAGE ./frontend'
+                dir('backend') {
+                    bat 'npm test'
+                }
             }
         }
 
-        stage('Run Backend Container') {
+        stage('Start App (Smoke Test)') {
             steps {
-                echo 'Stopping old backend container if exists...'
-                sh 'docker rm -f backend || true'
-                echo 'Starting backend container...'
-                sh """
-                    docker run -d --name backend \
-                    --env-file $ENV_FILE \
-                    -p 3000:3000 \
-                    $BACKEND_IMAGE
-                """
-            }
-        }
-
-        stage('Run Frontend Container') {
-            steps {
-                echo 'Stopping old frontend container if exists...'
-                sh 'docker rm -f frontend || true'
-                echo 'Starting frontend container...'
-                sh """
-                    docker run -d --name frontend \
-                    -p 80:80 \
-                    $FRONTEND_IMAGE
-                """
+                dir('backend') {
+                    bat '''
+                    start /b cmd /c "node server.js"
+                    ping -n 6 127.0.0.1 > nul
+                    taskkill /IM node.exe /F
+                    '''
+                }
             }
         }
     }
-
-    post {
-        success {
-            echo '✅ Pipeline finished successfully!'
-        }
-        failure {
-            echo '❌ Pipeline failed!'
-        }
-    }
-}
+} 
