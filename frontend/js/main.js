@@ -1,4 +1,8 @@
+
 const API_URL = "http://localhost:3000"; // This URL is correct for Docker setup
+=======
+const API_URL = "http://localhost:3000/api"; // correct base URL
+
 
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
@@ -10,7 +14,11 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   const password = document.getElementById("signupPassword").value;
 
   try {
+
     const res = await fetch(${API_URL}/api/users/signup, { // MODIFIED
+=======
+    const res = await fetch(`${API_URL}/users/signup`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
@@ -31,7 +39,12 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   const password = document.getElementById("loginPassword").value;
 
   try {
+
+
     const res = await fetch(${API_URL}/api/users/login, { // MODIFIED
+=======
+    const res = await fetch(`${API_URL}/users/login`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -63,7 +76,11 @@ document.getElementById("listingForm")?.addEventListener("submit", async (e) => 
   const location = document.getElementById("listingLocation").value;
 
   try {
+
     const res = await fetch(${API_URL}/api/listings, { // MODIFIED
+=======
+    const res = await fetch(`${API_URL}/listings`, {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -89,7 +106,11 @@ const listingsContainer = document.getElementById("listingsContainer");
 if (listingsContainer) {
   (async () => {
     try {
+
       const res = await fetch(${API_URL}/api/listings); // MODIFIED
+=======
+      const res = await fetch(`${API_URL}/listings`);
+
       const listings = await res.json();
 
       listingsContainer.innerHTML = listings.map(l => `
@@ -117,7 +138,11 @@ const listingId = params.get("id");
 if (listingId) {
   (async () => {
     try {
+
       const res = await fetch(${API_URL}/api/listings/${listingId}); // MODIFIED
+=======
+      const res = await fetch(`${API_URL}/listings/${listingId}`);
+
       const listing = await res.json();
 
       document.getElementById("listingDetails").innerHTML = `
@@ -128,8 +153,14 @@ if (listingId) {
             <p>${listing.description}</p>
             <p><strong>₹${listing.price} / night</strong></p>
             <p><i>${listing.location}</i></p>
+
             ${currentUser && currentUser._id === listing.userId ?
               <button onclick="deleteListing('${listing._id}')" class="btn btn-danger">Delete</button> : ""}
+=======
+            ${currentUser && currentUser._id === listing.userId 
+              ? `<button onclick="deleteListing('${listing._id}')" class="btn btn-danger">Delete</button>` 
+              : ""}
+
           </div>
         </div>
       `;
@@ -145,7 +176,11 @@ if (listingId) {
 async function deleteListing(id) {
   if (!confirm("Are you sure you want to delete this listing?")) return;
   try {
+
     const res = await fetch(${API_URL}/api/listings/${id}, { method: "DELETE" }); // MODIFIED
+=======
+    const res = await fetch(`${API_URL}/listings/${id}`, { method: "DELETE" });
+
     if (!res.ok) throw new Error("Delete failed");
     alert("Listing deleted!");
     window.location.href = "index.html";
@@ -157,7 +192,7 @@ async function deleteListing(id) {
 // ================== REVIEWS ==================
 async function loadReviews(listing) {
   const reviewsList = document.getElementById("reviewsList");
-  reviewsList.innerHTML = listing.reviews.map(r => <li class="list-group-item">${r}</li>).join("");
+  reviewsList.innerHTML = listing.reviews.map(r => `<li class="list-group-item">${r}</li>`).join("");
 
   document.getElementById("reviewForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -168,7 +203,11 @@ async function loadReviews(listing) {
     const review = document.getElementById("reviewText").value;
 
     try {
+
       const res = await fetch(${API_URL}/api/listings/${listing._id}/reviews, { // MODIFIED
+=======
+      const res = await fetch(`${API_URL}/listings/${listing._id}/reviews`, {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ review })
