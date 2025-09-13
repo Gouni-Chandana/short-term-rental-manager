@@ -2,20 +2,40 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'Node18'  
-        git 'Default'    
+        nodejs 'Node18'
     }
 
     stages {
+
         stage('Checkout Code') {
             steps {
-                checkout scm
+                git branch: 'main',
+                    url: 'https://github.com/Chinmayee29/short-term-rental-manager.git',
+                    credentialsId: '3bcf3b0a-ac43-4f70-9f19-f27785778fef'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building project...'
+                sh 'npm run build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Post Build') {
+            steps {
+                echo 'Build completed successfully!'
             }
         }
     }
