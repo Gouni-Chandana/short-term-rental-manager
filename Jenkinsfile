@@ -17,19 +17,25 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                dir('backend') {
+                    bat 'npm install'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                bat 'npm run build'
+                dir('backend') {
+                    bat 'npm run build'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'npm test'
+                dir('backend') {
+                    bat 'npm test'
+                }
             }
         }
 
