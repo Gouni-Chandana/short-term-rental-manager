@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         nodejs 'Node18'  
+        git 'Default'    
     }
 
     stages {
