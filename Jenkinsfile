@@ -1,3 +1,10 @@
+stage('Checkout Code') {
+    steps {
+        echo "✅ Running from branch: ${env.BRANCH_NAME}"
+        git branch: 'main',
+            url: 'https://github.com/Chinmayee29/short-term-rental-manager'
+    }
+}
 pipeline {
     agent any
 
