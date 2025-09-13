@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:3000/api"; // correct base URL
+const API_URL = window.location.origin + "/api";
+ // correct base URL
 
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
