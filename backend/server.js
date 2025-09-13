@@ -15,23 +15,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Root route
-app.get("/api", (req, res) => {
-  res.send("Backend is running ✅");
+// Helpers to get correct file path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Serve static frontend files
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+// ✅ Default route → serve signup.html
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/signup.html"));
 });
 
 // API routes
 app.use("/api/users", userRoutes);
 app.use("/api/listings", listingRoutes);
 
-// Serve React frontend
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.use(express.static(path.join(__dirname, "frontend/build")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
+// Handle 404 for unknown routes (optional)
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "../frontend/404.html")); // if you create one
 });
 
 const PORT = process.env.PORT || 3000;
